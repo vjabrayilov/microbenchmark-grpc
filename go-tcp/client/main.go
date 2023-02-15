@@ -19,22 +19,20 @@
 package main
 
 import (
+	"bufio"
 	"flag"
+	"go.uber.org/atomic"
 	"log"
 	"net"
+	"net/textproto"
 	"os"
 	"sync"
 	"time"
 )
 
-const (
-	defaultName = "world"
-)
-
 var (
-	addr        = flag.String("addr", "127.0.0.1:10000", "the address to connect to")
-	name        = flag.String("name", defaultName, "Name to greet")
-	numRequests = flag.Int64("n", 1000000, "number of requests")
+	addr        = flag.String("addr", "0.0.0.0:10000", "the address to connect to")
+	numRequests = flag.Int64("n", 100000, "number of requests")
 	numClients  = flag.Int64("c", 1, "number of clients")
 )
 
@@ -46,8 +44,9 @@ func main() {
 		os.Exit(1)
 	}
 
+	var total_tput atomic.Float64
+	total_tput.Store(0.0)
 	var wg sync.WaitGroup
-	// ctx := context.Background()
 	for i := int64(0); i < *numClients; i++ {
 		go func() {
 
@@ -58,19 +57,21 @@ func main() {
 			}
 
 			defer conn.Close()
+			reader := textproto.NewReader(bufio.NewReader(conn))
 			startTime := time.Now()
 			for j := int64(0); j < *numRequests; j++ {
-				// c.SayHello(ctx, &pb.HelloRequest{Name: *name})
 				conn.Write([]byte("Hello, World!\n"))
+				reader.ReadLine()
 			}
-			// conn.Close()
 			endTime := time.Now()
-			duration := endTime.Sub(startTime).Milliseconds()
-			log.Printf("single client throughput: %.f op/ms \n",
-				float64(*numRequests)/float64(duration))
+			duration := endTime.Sub(startTime).Seconds()
+			tput := float64(*numRequests) / duration
+			log.Printf("single client throughput: %.f op/s \n", tput)
+			total_tput.Add(tput)
 			wg.Done()
 		}()
 		wg.Add(1)
 	}
 	wg.Wait()
+	log.Printf("total throughput: %v op/s", total_tput.Load())
 }

@@ -1,38 +1,26 @@
-use tokio::{io::AsyncReadExt, net::TcpListener};
+use tokio::net::TcpListener;
+use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let addr: String = "127.0.0.1:50051".parse().unwrap();
-    // let greeter = MyGreeter::default();
+    let addr: String = "0.0.0.0:10000".parse().unwrap();
 
-    println!("GreeterServer listening on {addr}");
+    println!("server listening on {addr}");
     let listener = TcpListener::bind(&addr).await?;
     loop {
-        let (mut socket, _) = listener.accept().await?;
+        let (socket, _) = listener.accept().await?;
 
         tokio::spawn(async move {
-            let mut buf = vec![0; 1024];
-
-            // In a loop, read data from the socket and write the data back.
-            loop {
-                let n = socket
-                    .read(&mut buf)
-                    .await
-                    .expect("failed to read data from socket");
-
+            let (read_half, mut write_half) = socket.into_split();
+            let mut reader = BufReader::new(read_half);
+            let mut line = String::new();
+            while let Ok(n) = reader.read_line(&mut line).await {
                 if n == 0 {
-                    return;
+                    break
                 }
-
-                // print!("{}", String::from_utf8_lossy(&buf));
-                // socket
-                //     .write_all(&buf[0..n])
-                //     .await
-                //     .expect("failed to write data to socket");
-                // drop(socket);
+                write_half.write(line.as_bytes()).await;
+                line.clear();
             }
-            // drop(socket);
         });
-        // drop(socket);
     }
 }

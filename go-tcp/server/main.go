@@ -19,10 +19,12 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"log"
 	"net"
+	"net/textproto"
 	"os"
 )
 
@@ -33,7 +35,7 @@ var (
 
 func main() {
 	flag.Parse()
-	lis, err := net.Listen("tcp", fmt.Sprintf("127.0.0.1:%d", *port))
+	lis, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", *port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 		os.Exit(1)
@@ -49,14 +51,18 @@ func main() {
 }
 
 func handleRequest(conn net.Conn) {
-	buf := make([]byte, 1024)
+	reader := textproto.NewReader(bufio.NewReader(conn))
 	for {
-		_, err := conn.Read(buf)
+		msg, err := reader.ReadLine()
 		if err != nil {
 			log.Print(err)
 			break
 		}
-		log.Printf("%v\n", string(buf))
+		msg = msg + "\n"
+		_, err = conn.Write([]byte(msg))
+		if err != nil {
+			log.Println(err)
+		}
+		//log.Printf("%v\n", string(buf))
 	}
-	// conn.Close()
 }

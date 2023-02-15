@@ -1,52 +1,59 @@
 use clap::Parser;
 use std::time::SystemTime;
 use tokio::{io::AsyncWriteExt, net::TcpStream, task::JoinSet};
+use tokio::io::{AsyncBufReadExt, BufReader};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    #[arg(long, default_value_t = 1000000)]
-    num_requests: u128,
+    #[arg(long, default_value_t = 100000)]
+    num_requests: u64,
 
     #[arg(long, default_value_t = 1)]
     num_clients: u64,
 
-    #[arg(long, default_value_t = String::from("127.0.0.1:50051"))]
+    #[arg(long, default_value_t = String::from("0.0.0.0:10000"))]
     addr: String,
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
-    let num_requests: u128 = args.num_requests;
+    let num_requests = args.num_requests;
     let num_clients = args.num_clients;
 
     let mut client_tasks = JoinSet::new();
     for _i in 0..num_clients {
-        // let mut client = client.clone();
-        let mut client = TcpStream::connect(args.addr.to_string()).await?;
+        let addr = args.addr.clone();
         client_tasks.spawn(async move {
+            let client = TcpStream::connect(addr.to_string()).await.unwrap();
+            let (read_half, mut write_half) = client.into_split();
+            let mut read_half = BufReader::new(read_half);
+            let mut line = String::new();
             let start_time = SystemTime::now();
             for _j in 0..num_requests {
-                // let request = tonic::Request::new(HelloRequest {
-                //     name: String::from("world"),
-                // });
-                // let _response = client.say_hello(request).await;
-                client.write_all(b"Hello, World!\n").await.unwrap();
-                // io::write_all(client, "hello world\n");
+                write_half.write_all(b"Hello, World!\n").await.unwrap();
+                read_half.read_line(&mut line).await;
+                line.clear();
             }
-            // drop(client);
             let end_time = SystemTime::now();
             let duration = end_time.duration_since(start_time);
-            let duration = duration.unwrap().as_millis();
-            println!(
-                "single client throughput: {} op/ms",
-                num_requests / duration
-            );
+            let duration = duration.unwrap().as_secs_f64();
+            let tput = num_requests as f64 / duration;
+            println!("single client throughput: {} op/s", tput);
+            tput
         });
     }
 
-    while let Some(_response_result) = client_tasks.join_next().await {}
+    let mut total_tput = 0.0;
+    while let Some(result) = client_tasks.join_next().await {
+        let result = match result {
+            Ok(result) => result,
+            Err(_) => 0.0,
+        };
+        total_tput += result;
+    }
+    println!("total throughput: {} op/s", total_tput);
 
     Ok(())
 }
