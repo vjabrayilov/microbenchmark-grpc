@@ -1,7 +1,4 @@
-use tokio::{
-    io::{AsyncReadExt, AsyncWriteExt},
-    net::TcpListener,
-};
+use tokio::{io::AsyncReadExt, net::TcpListener};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -27,11 +24,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     return;
                 }
 
+                // print!("{}", String::from_utf8_lossy(&buf));
                 // socket
                 //     .write_all(&buf[0..n])
                 //     .await
                 //     .expect("failed to write data to socket");
+                // drop(socket);
             }
+            // drop(socket);
         });
+        // drop(socket);
     }
 }

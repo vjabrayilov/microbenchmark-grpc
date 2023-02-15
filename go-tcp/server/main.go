@@ -43,7 +43,6 @@ func main() {
 		conn, err := lis.Accept()
 		if err != nil {
 			log.Fatal(err)
-			os.Exit(1)
 		}
 		go handleRequest(conn)
 	}
@@ -51,9 +50,13 @@ func main() {
 
 func handleRequest(conn net.Conn) {
 	buf := make([]byte, 1024)
-	_, err := conn.Read(buf)
-	if err != nil {
-		log.Fatal(err)
+	for {
+		_, err := conn.Read(buf)
+		if err != nil {
+			log.Print(err)
+			break
+		}
+		log.Printf("%v\n", string(buf))
 	}
-	conn.Close()
+	// conn.Close()
 }

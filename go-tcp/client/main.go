@@ -61,8 +61,9 @@ func main() {
 			startTime := time.Now()
 			for j := int64(0); j < *numRequests; j++ {
 				// c.SayHello(ctx, &pb.HelloRequest{Name: *name})
-				conn.Write([]byte("Hello, World!"))
+				conn.Write([]byte("Hello, World!\n"))
 			}
+			// conn.Close()
 			endTime := time.Now()
 			duration := endTime.Sub(startTime).Milliseconds()
 			log.Printf("single client throughput: %.f op/ms \n",

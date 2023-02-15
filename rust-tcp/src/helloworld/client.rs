@@ -32,9 +32,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 //     name: String::from("world"),
                 // });
                 // let _response = client.say_hello(request).await;
-                client.write_all(b"hello world\n").await.unwrap();
+                client.write_all(b"Hello, World!\n").await.unwrap();
                 // io::write_all(client, "hello world\n");
             }
+            // drop(client);
             let end_time = SystemTime::now();
             let duration = end_time.duration_since(start_time);
             let duration = duration.unwrap().as_millis();

@@ -1,0 +1,11 @@
+/home/vjabrayilov/research/misopt/microbenchmark-grpc/rust-tcp/target/debug/deps/matchit-d6897ca01cce37d4.rmeta: /home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/lib.rs /home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/error.rs /home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/params.rs /home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/router.rs /home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/tree.rs
+
+/home/vjabrayilov/research/misopt/microbenchmark-grpc/rust-tcp/target/debug/deps/libmatchit-d6897ca01cce37d4.rlib: /home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/lib.rs /home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/error.rs /home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/params.rs /home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/router.rs /home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/tree.rs
+
+/home/vjabrayilov/research/misopt/microbenchmark-grpc/rust-tcp/target/debug/deps/matchit-d6897ca01cce37d4.d: /home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/lib.rs /home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/error.rs /home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/params.rs /home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/router.rs /home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/tree.rs
+
+/home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/lib.rs:
+/home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/error.rs:
+/home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/params.rs:
+/home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/router.rs:
+/home/vjabrayilov/.cargo/registry/src/github.com-1ecc6299db9ec823/matchit-0.7.0/src/tree.rs:
